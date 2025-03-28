@@ -1,17 +1,17 @@
-package com.saviosousa.bancogestao.banco_api.model;
+package com.saviosousa.bancogestao.banco_api.models;
 
-public class Conta {
+public class ContaModel {
 	private int numero_conta;
 	private float saldo;
 	
-	public Conta() {
+	public ContaModel() {
 		
 	}
 	
-	public Conta(int numero_conta, float saldo) {
+	public ContaModel(int numero_conta, float saldo) {
 		this.numero_conta = numero_conta;
 		this.saldo = saldo;
-	}
+	} 
 	
 	public int getNumero_conta() {
 		return numero_conta;
