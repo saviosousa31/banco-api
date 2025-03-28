@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.saviosousa.bancogestao.banco_api.exceptions.ContaJaExistenteException;
 import com.saviosousa.bancogestao.banco_api.exceptions.NumeroDeContaInvalidoException;
 import com.saviosousa.bancogestao.banco_api.exceptions.SaldoDaContaInvalidoException;
 import com.saviosousa.bancogestao.banco_api.models.ContaModel;
@@ -24,9 +25,11 @@ public class ContaService {
     // cria uma nova Conta
     public void adicionarConta(ContaModel conta) {
     	if (conta.getNumero_conta() <= 0) {
-            throw new NumeroDeContaInvalidoException("Número de Conta inválido!");
+            throw new NumeroDeContaInvalidoException(NumeroDeContaInvalidoException.MSG_NUMERO_DE_CONTA_INVALIDO);
         } else if (conta.getSaldo() < 0) {
-            throw new SaldoDaContaInvalidoException("Saldo da Conta inválido!");
+            throw new SaldoDaContaInvalidoException(SaldoDaContaInvalidoException.MSG_SALDO_DA_CONTA_INVALIDO);
+        } else if (this.buscarConta(conta.getNumero_conta()).isPresent()) {
+        	throw new ContaJaExistenteException(ContaJaExistenteException.MSG_CONTA_JA_EXISTENTE);
         } else
         	contas.add(conta);
     }

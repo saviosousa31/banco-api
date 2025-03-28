@@ -34,20 +34,19 @@ public class TransacaoService {
     public void realizarTransacao(TransacaoModel transacao) throws RuntimeException {
         Optional<ContaModel> conta = contaService.buscarConta(transacao.getNumero_conta());
         if (!conta.isPresent()) {
-            throw new ContaNaoEncontradaException("Conta não encontrada!");
+            throw new ContaNaoEncontradaException(ContaNaoEncontradaException.MSG_CONTA_NAO_ENCONTRADA);
         }
+
+        float taxa = calcularTaxa(transacao.getForma_pagamento());
 
         ContaModel contaEspecifica = conta.get();
         if (transacao.getValor() <= 0) {
-            throw new ValorInvalidoException("Valor inválido!");
-        } else if (transacao.getValor() > contaEspecifica.getSaldo()) {
-            throw new SaldoInsuficienteException("Saldo insuficiente!");
+            throw new ValorInvalidoException(ValorInvalidoException.MSG_VALOR_INVALIDO);
+        } else if ((transacao.getValor() + (transacao.getValor() * taxa)) > contaEspecifica.getSaldo()) {
+            throw new SaldoInsuficienteException(SaldoInsuficienteException.MSG_SALDO_INSUFICIENTE);
         } else if (transacao.getForma_pagamento() != 'P' && transacao.getForma_pagamento() != 'C' && transacao.getForma_pagamento() != 'D') {
-        	throw new FormaDePagamentoInvalidaException("Forma de pagamento inválida!");
-        }
-
-        
-        float taxa = calcularTaxa(transacao.getForma_pagamento());
+        	throw new FormaDePagamentoInvalidaException(FormaDePagamentoInvalidaException.MSG_FORMA_DE_PAGAMENTO_INVALIDA);
+        }        
         
         float novoSaldo = contaEspecifica.getSaldo() - (transacao.getValor() + (transacao.getValor() * taxa));
         contaEspecifica.setSaldo(novoSaldo);

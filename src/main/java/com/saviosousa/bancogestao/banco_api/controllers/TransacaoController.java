@@ -1,5 +1,7 @@
 package com.saviosousa.bancogestao.banco_api.controllers;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +14,9 @@ import com.saviosousa.bancogestao.banco_api.exceptions.ContaNaoEncontradaExcepti
 import com.saviosousa.bancogestao.banco_api.exceptions.FormaDePagamentoInvalidaException;
 import com.saviosousa.bancogestao.banco_api.exceptions.SaldoInsuficienteException;
 import com.saviosousa.bancogestao.banco_api.exceptions.ValorInvalidoException;
+import com.saviosousa.bancogestao.banco_api.models.ContaModel;
 import com.saviosousa.bancogestao.banco_api.models.TransacaoModel;
+import com.saviosousa.bancogestao.banco_api.services.ContaService;
 import com.saviosousa.bancogestao.banco_api.services.TransacaoService;
 
 @RestController
@@ -21,13 +25,16 @@ public class TransacaoController {
 
 	@Autowired
 	private TransacaoService transacaoService;
+	@Autowired
+	private ContaService contaService;	
 
 	// realiza uma nova transação através do TransacaoService
 	@PostMapping("")
 	public ResponseEntity<?> realizarTransacao(@RequestBody TransacaoModel body) {
 		try {
+			Optional<ContaModel> conta = contaService.buscarConta(body.getNumero_conta());			
 	        transacaoService.realizarTransacao(body);
-        	return ResponseEntity.status(HttpStatus.CREATED).body(body);        	
+        	return ResponseEntity.status(HttpStatus.CREATED).body(conta);        	
 	    } catch (ContaNaoEncontradaException e) {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 	    } catch (SaldoInsuficienteException e) {
