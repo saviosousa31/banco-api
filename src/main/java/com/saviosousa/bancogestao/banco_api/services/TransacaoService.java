@@ -14,10 +14,18 @@ import com.saviosousa.bancogestao.banco_api.models.TransacaoModel;
 
 @Service
 public class TransacaoService {
-
-    @Autowired
+    
+	@Autowired
     private ContaService contaService;
 
+	public TransacaoService() {
+		
+	}
+	
+	public TransacaoService(ContaService contaService) {
+		this.contaService = contaService;		
+	}
+	
     // calcula a taxa da transação
     public float calcularTaxa(char formaPagamento) {
         switch (formaPagamento) {
